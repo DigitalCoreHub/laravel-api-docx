@@ -1,0 +1,28 @@
+{
+    "name": "digitalcorehub/laravel-api-docx",
+    "description": "AI-powered automatic API documentation generator for Laravel.",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.3",
+        "illuminate/support": "^12.0",
+        "illuminate/console": "^12.0",
+        "illuminate/filesystem": "^12.0",
+        "guzzlehttp/guzzle": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "DigitalCoreHub\\LaravelApiDocx\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "DigitalCoreHub\\LaravelApiDocx\\LaravelApiDocxServiceProvider"
+            ]
+        }
+    }
+}
