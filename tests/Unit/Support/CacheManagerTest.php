@@ -120,6 +120,11 @@ class CacheManagerTest extends TestCase
             ->andReturn(false);
 
         $this->filesystem
+            ->shouldReceive('ensureDirectoryExists')
+            ->with(dirname('/tmp/test-cache.php'))
+            ->once();
+
+        $this->filesystem
             ->shouldReceive('put')
             ->with('/tmp/test-cache.php', Mockery::type('string'))
             ->once();

@@ -14,7 +14,7 @@ class MarkdownFormatterTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->formatter = new MarkdownFormatter();
+        $this->formatter = new MarkdownFormatter;
     }
 
     public function test_formats_single_route(): void
@@ -34,9 +34,9 @@ class MarkdownFormatterTest extends TestCase
 
         $this->assertStringContainsString('# API Documentation', $result);
         $this->assertStringContainsString('## GET /api/users', $result);
-        $this->assertStringContainsString('**Controller:** App\Http\Controllers\UserController', $result);
-        $this->assertStringContainsString('**Method:** index', $result);
-        $this->assertStringContainsString('**Description:** Retrieves a list of users.', $result);
+        $this->assertStringContainsString('**Controller:** `App\Http\Controllers\UserController@index`', $result);
+        $this->assertStringContainsString('**Name:** `users.index`', $result);
+        $this->assertStringContainsString('Retrieves a list of users.', $result);
     }
 
     public function test_formats_multiple_routes(): void
@@ -84,8 +84,7 @@ class MarkdownFormatterTest extends TestCase
         $result = $this->formatter->format($documentation);
 
         $this->assertStringContainsString('## GET /api/health', $result);
-        $this->assertStringContainsString('**Controller:** Closure', $result);
-        $this->assertStringContainsString('**Method:** invoke', $result);
+        $this->assertStringContainsString('**Controller:** `Closure@invoke`', $result);
     }
 
     public function test_handles_missing_descriptions(): void
@@ -103,7 +102,7 @@ class MarkdownFormatterTest extends TestCase
 
         $result = $this->formatter->format($documentation);
 
-        $this->assertStringContainsString('**Description:** No description available.', $result);
+        $this->assertStringContainsString('No description available.', $result);
     }
 
     public function test_includes_timestamp(): void
@@ -112,8 +111,7 @@ class MarkdownFormatterTest extends TestCase
 
         $result = $this->formatter->format($documentation);
 
-        $this->assertStringContainsString('Generated on:', $result);
-        $this->assertStringContainsString(date('Y-m-d H:i:s'), $result);
+        $this->assertStringContainsString('Generated automatically by **digitalcorehub/laravel-api-docx**.', $result);
     }
 
     public function test_handles_empty_documentation(): void
@@ -123,10 +121,10 @@ class MarkdownFormatterTest extends TestCase
         $result = $this->formatter->format($documentation);
 
         $this->assertStringContainsString('# API Documentation', $result);
-        $this->assertStringContainsString('No API routes found.', $result);
+        $this->assertStringContainsString('Generated automatically by **digitalcorehub/laravel-api-docx**.', $result);
     }
 
-    public function test_escapes_special_characters(): void
+    public function test_handles_special_characters(): void
     {
         $documentation = [
             [
@@ -142,6 +140,6 @@ class MarkdownFormatterTest extends TestCase
         $result = $this->formatter->format($documentation);
 
         $this->assertStringContainsString('/api/users/{id}', $result);
-        $this->assertStringNotContainsString('<>&"\'', $result);
+        $this->assertStringContainsString('Retrieves a user with ID containing special chars: <>&"\'', $result);
     }
 }

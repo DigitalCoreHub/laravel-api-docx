@@ -20,6 +20,14 @@ class AdvancedAiGenerator
     ) {}
 
     /**
+     * Determine if AI generation is enabled.
+     */
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
+    }
+
+    /**
      * Generate comprehensive API documentation with examples.
      *
      * @param array<string, mixed> $route

@@ -30,6 +30,9 @@ class DocBlockParserTest extends TestCase
         $this->assertEquals('Retrieves a list of users.', $result);
     }
 
+    /**
+     * @covers \DigitalCoreHub\LaravelApiDocx\Services\DocBlockParser::extractSummary
+     */
     public function test_returns_null_for_missing_docblock(): void
     {
         $controller = TestController::class;
