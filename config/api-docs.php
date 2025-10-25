@@ -5,6 +5,10 @@ return [
         ? base_path('docs/api.md')
         : __DIR__ . '/../docs/api.md',
 
+    'openapi_output' => function_exists('base_path')
+        ? base_path('docs/api.json')
+        : __DIR__ . '/../docs/api.json',
+
     'enable_ai' => true,
     'ai' => [
         'provider' => 'openai',

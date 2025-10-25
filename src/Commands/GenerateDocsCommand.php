@@ -5,6 +5,7 @@ namespace DigitalCoreHub\LaravelApiDocx\Commands;
 use DigitalCoreHub\LaravelApiDocx\Services\AiDocGenerator;
 use DigitalCoreHub\LaravelApiDocx\Services\DocBlockParser;
 use DigitalCoreHub\LaravelApiDocx\Services\MarkdownFormatter;
+use DigitalCoreHub\LaravelApiDocx\Services\OpenApiFormatter;
 use DigitalCoreHub\LaravelApiDocx\Services\RouteCollector;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
@@ -17,7 +18,9 @@ class GenerateDocsCommand extends Command
     /**
      * {@inheritDoc}
      */
-    protected $signature = 'api:docs';
+    protected $signature = 'api:docs 
+                            {--format=both : Output format (markdown, openapi, both)}
+                            {--output= : Custom output path}';
 
     /**
      * {@inheritDoc}
@@ -28,14 +31,16 @@ class GenerateDocsCommand extends Command
      * @param RouteCollector $collector
      * @param DocBlockParser $docBlockParser
      * @param AiDocGenerator $aiDocGenerator
-     * @param MarkdownFormatter $formatter
+     * @param MarkdownFormatter $markdownFormatter
+     * @param OpenApiFormatter $openApiFormatter
      * @param Filesystem $files
      */
     public function __construct(
         private readonly RouteCollector $collector,
         private readonly DocBlockParser $docBlockParser,
         private readonly AiDocGenerator $aiDocGenerator,
-        private readonly MarkdownFormatter $formatter,
+        private readonly MarkdownFormatter $markdownFormatter,
+        private readonly OpenApiFormatter $openApiFormatter,
         private readonly Filesystem $files
     ) {
         parent::__construct();
@@ -51,7 +56,7 @@ class GenerateDocsCommand extends Command
         if ($routes === []) {
             $this->warn('No API routes found.');
 
-            return self::SUCCESS;
+            return 0;
         }
 
         $documentation = [];
@@ -84,15 +89,55 @@ class GenerateDocsCommand extends Command
             ];
         }
 
-        $markdown = $this->formatter->format($documentation);
+        $format = $this->option('format');
+        $customOutput = $this->option('output');
+        
+        $this->info(sprintf('Found %d API routes. Generating documentation...', count($documentation)));
+
+        if ($format === 'markdown' || $format === 'both') {
+            $this->generateMarkdown($documentation, $customOutput);
+        }
+
+        if ($format === 'openapi' || $format === 'both') {
+            $this->generateOpenApi($documentation, $customOutput);
+        }
+
+        return 0;
+    }
+
+    /**
+     * Generate Markdown documentation.
+     *
+     * @param array $documentation
+     * @param string|null $customOutput
+     */
+    private function generateMarkdown(array $documentation, ?string $customOutput): void
+    {
+        $markdown = $this->markdownFormatter->format($documentation);
         $defaultOutput = function_exists('base_path') ? base_path('docs/api.md') : getcwd() . '/docs/api.md';
-        $outputPath = (string) digitalcorehub_config('api-docs.output', $defaultOutput);
+        $outputPath = $customOutput ?: (string) digitalcorehub_config('api-docs.output', $defaultOutput);
 
         $this->files->ensureDirectoryExists(dirname($outputPath));
         $this->files->put($outputPath, $markdown);
 
-        $this->info(sprintf('API documentation generated: %s', $outputPath));
+        $this->info(sprintf('Markdown documentation generated: %s', $outputPath));
+    }
 
-        return self::SUCCESS;
+    /**
+     * Generate OpenAPI documentation.
+     *
+     * @param array $documentation
+     * @param string|null $customOutput
+     */
+    private function generateOpenApi(array $documentation, ?string $customOutput): void
+    {
+        $openApi = $this->openApiFormatter->format($documentation);
+        $defaultOutput = function_exists('base_path') ? base_path('docs/api.json') : getcwd() . '/docs/api.json';
+        $outputPath = $customOutput ?: (string) digitalcorehub_config('api-docs.openapi_output', $defaultOutput);
+
+        $this->files->ensureDirectoryExists(dirname($outputPath));
+        $this->files->put($outputPath, $openApi);
+
+        $this->info(sprintf('OpenAPI documentation generated: %s', $outputPath));
     }
 }

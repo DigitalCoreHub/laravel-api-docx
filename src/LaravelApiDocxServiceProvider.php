@@ -6,6 +6,7 @@ use DigitalCoreHub\LaravelApiDocx\Commands\GenerateDocsCommand;
 use DigitalCoreHub\LaravelApiDocx\Services\AiDocGenerator;
 use DigitalCoreHub\LaravelApiDocx\Services\DocBlockParser;
 use DigitalCoreHub\LaravelApiDocx\Services\MarkdownFormatter;
+use DigitalCoreHub\LaravelApiDocx\Services\OpenApiFormatter;
 use DigitalCoreHub\LaravelApiDocx\Services\RouteCollector;
 use DigitalCoreHub\LaravelApiDocx\Support\AiClientInterface;
 use DigitalCoreHub\LaravelApiDocx\Support\CacheManager;
@@ -29,6 +30,7 @@ class LaravelApiDocxServiceProvider extends ServiceProvider
         $this->app->singleton(RouteCollector::class);
         $this->app->singleton(DocBlockParser::class);
         $this->app->singleton(MarkdownFormatter::class);
+        $this->app->singleton(OpenApiFormatter::class);
         $this->app->singleton(CacheManager::class, function ($app): CacheManager {
             return new CacheManager(
                 $app['files'],
