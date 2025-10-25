@@ -24,6 +24,9 @@
         <include>
             <directory suffix=".php">./src</directory>
         </include>
+        <exclude>
+            <directory>./src/Commands</directory>
+        </exclude>
     </source>
     <php>
         <env name="APP_ENV" value="testing"/>
