@@ -67,4 +67,14 @@ class CacheManager
         $export = '<?php return ' . var_export($cache, true) . ';';
         $this->files->put($this->path, $export);
     }
+
+    /**
+     * Clear the cache file.
+     */
+    public function clear(): void
+    {
+        if ($this->enabled && $this->files->exists($this->path)) {
+            $this->files->delete($this->path);
+        }
+    }
 }
