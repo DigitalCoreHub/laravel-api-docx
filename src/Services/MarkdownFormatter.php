@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DigitalCoreHub\LaravelApiDocx\Services;
 
 use Illuminate\Support\Str;
@@ -13,7 +15,6 @@ class MarkdownFormatter
      * Build the markdown string for the provided documentation entries.
      *
      * @param array<int, array<string, string>> $documentation
-     * @return string
      */
     public function format(array $documentation): string
     {

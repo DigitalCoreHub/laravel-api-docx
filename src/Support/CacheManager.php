@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DigitalCoreHub\LaravelApiDocx\Support;
 
 use Illuminate\Filesystem\Filesystem;
@@ -9,17 +11,11 @@ use Illuminate\Filesystem\Filesystem;
  */
 class CacheManager
 {
-    /**
-     * @param Filesystem $files
-     * @param string $path
-     * @param bool $enabled
-     */
     public function __construct(
         private readonly Filesystem $files,
         private readonly string $path,
         private readonly bool $enabled = true
-    ) {
-    }
+    ) {}
 
     /**
      * Determine if caching is enabled.
@@ -34,13 +30,13 @@ class CacheManager
      */
     public function get(string $key): ?string
     {
-        if (!$this->enabled || !$this->files->exists($this->path)) {
+        if (! $this->enabled || ! $this->files->exists($this->path)) {
             return null;
         }
 
         $cache = include $this->path;
 
-        if (!is_array($cache)) {
+        if (! is_array($cache)) {
             return null;
         }
 
@@ -52,7 +48,7 @@ class CacheManager
      */
     public function put(string $key, string $value): void
     {
-        if (!$this->enabled) {
+        if (! $this->enabled) {
             return;
         }
 

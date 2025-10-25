@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DigitalCoreHub\LaravelApiDocx\Services;
 
 use Illuminate\Routing\Route;
@@ -22,13 +24,13 @@ class RouteCollector
         $routes = [];
 
         foreach (RouteFacade::getRoutes() as $route) {
-            if (!$route instanceof Route) {
+            if (! $route instanceof Route) {
                 continue;
             }
 
             $uri = $route->uri();
 
-            if (!Str::startsWith($uri, 'api')) {
+            if (! Str::startsWith($uri, 'api')) {
                 continue;
             }
 
@@ -60,7 +62,6 @@ class RouteCollector
      * Normalise HTTP methods excluding HEAD when GET is present.
      *
      * @param array<int, string> $methods
-     * @return string
      */
     private function filterHttpMethods(array $methods): string
     {

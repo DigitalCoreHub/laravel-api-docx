@@ -1,12 +1,10 @@
 <?php
 
-if (!function_exists('digitalcorehub_config')) {
+declare(strict_types=1);
+
+if (! function_exists('digitalcorehub_config')) {
     /**
      * Retrieve configuration values safely when the config helper is not available.
-     *
-     * @param string $key
-     * @param mixed|null $default
-     * @return mixed
      */
     function digitalcorehub_config(string $key, mixed $default = null): mixed
     {
@@ -18,12 +16,9 @@ if (!function_exists('digitalcorehub_config')) {
     }
 }
 
-if (!function_exists('digitalcorehub_storage_path')) {
+if (! function_exists('digitalcorehub_storage_path')) {
     /**
      * Resolve the storage path when the framework helper is missing.
-     *
-     * @param string $path
-     * @return string
      */
     function digitalcorehub_storage_path(string $path = ''): string
     {

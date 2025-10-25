@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DigitalCoreHub\LaravelApiDocx\Services;
 
 use DigitalCoreHub\LaravelApiDocx\Support\AiClientInterface;
 use DigitalCoreHub\LaravelApiDocx\Support\CacheManager;
+use Exception;
 
 /**
  * Advanced AI generator with enhanced features for API documentation.
@@ -14,13 +17,13 @@ class AdvancedAiGenerator
         private readonly AiClientInterface $client,
         private readonly CacheManager $cacheManager,
         private readonly bool $enabled
-    ) {
-    }
+    ) {}
 
     /**
      * Generate comprehensive API documentation with examples.
      *
      * @param array<string, mixed> $route
+     *
      * @return array<string, mixed>
      */
     public function generateComprehensiveDocs(array $route): array
@@ -57,6 +60,7 @@ class AdvancedAiGenerator
     private function generateDescription(array $route): string
     {
         $prompt = $this->buildDescriptionPrompt($route);
+
         return $this->makeAiRequest($prompt, 300);
     }
 
@@ -66,6 +70,7 @@ class AdvancedAiGenerator
     private function generateSummary(array $route): string
     {
         $prompt = $this->buildSummaryPrompt($route);
+
         return $this->makeAiRequest($prompt, 100);
     }
 
@@ -76,7 +81,7 @@ class AdvancedAiGenerator
     {
         $prompt = $this->buildParametersPrompt($route);
         $response = $this->makeAiRequest($prompt, 500);
-        
+
         // Parse AI response into structured parameters
         return $this->parseParametersResponse($response, $route);
     }
@@ -89,13 +94,13 @@ class AdvancedAiGenerator
         $methods = explode('|', $route['http_methods']);
         $method = strtoupper($methods[0]);
 
-        if (!in_array($method, ['POST', 'PUT', 'PATCH'])) {
+        if (! in_array($method, ['POST', 'PUT', 'PATCH'])) {
             return [];
         }
 
         $prompt = $this->buildRequestExamplePrompt($route);
         $response = $this->makeAiRequest($prompt, 200);
-        
+
         return $this->parseJsonResponse($response);
     }
 
@@ -106,7 +111,7 @@ class AdvancedAiGenerator
     {
         $prompt = $this->buildResponseExamplePrompt($route);
         $response = $this->makeAiRequest($prompt, 300);
-        
+
         return $this->parseJsonResponse($response);
     }
 
@@ -117,7 +122,7 @@ class AdvancedAiGenerator
     {
         $prompt = $this->buildErrorResponsesPrompt($route);
         $response = $this->makeAiRequest($prompt, 200);
-        
+
         return $this->parseErrorResponses($response);
     }
 
@@ -128,7 +133,7 @@ class AdvancedAiGenerator
     {
         $uri = $route['uri'];
         $segments = explode('/', trim($uri, '/'));
-        
+
         // Remove 'api' prefix if present
         if ($segments[0] === 'api') {
             array_shift($segments);
@@ -136,7 +141,7 @@ class AdvancedAiGenerator
 
         $tags = [];
         foreach ($segments as $segment) {
-            if (!preg_match('/\{.*\}/', $segment)) {
+            if (! preg_match('/\{.*\}/', $segment)) {
                 $tags[] = ucfirst(str_replace('-', ' ', $segment));
             }
         }
@@ -149,13 +154,13 @@ class AdvancedAiGenerator
      */
     private function makeAiRequest(string $prompt, int $maxTokens): string
     {
-        if (!$this->enabled) {
+        if (! $this->enabled) {
             return '';
         }
 
         try {
             return $this->client->describeEndpoint('', '', ['prompt' => $prompt, 'max_tokens' => $maxTokens]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return '';
         }
     }
@@ -177,7 +182,7 @@ class AdvancedAiGenerator
             "- When to use it\n" .
             "- Business logic involved\n" .
             "- Any important notes\n\n" .
-            "Keep it professional and detailed (2-3 sentences).",
+            'Keep it professional and detailed (2-3 sentences).',
             $route['controller'] ?? 'Unknown',
             $route['method'] ?? 'Unknown',
             $route['http_methods'],
@@ -222,7 +227,7 @@ class AdvancedAiGenerator
             "- required: boolean\n" .
             "- description: what it does\n" .
             "- example: sample value\n\n" .
-            "Include both path parameters and query parameters.",
+            'Include both path parameters and query parameters.',
             $route['controller'] ?? 'Unknown',
             $route['method'] ?? 'Unknown',
             $route['http_methods'],
@@ -241,7 +246,7 @@ class AdvancedAiGenerator
             "Method: %s\n" .
             "HTTP Methods: %s\n" .
             "URI: %s\n\n" .
-            "Provide a JSON object with realistic sample data that would be sent to this endpoint.",
+            'Provide a JSON object with realistic sample data that would be sent to this endpoint.',
             $route['controller'] ?? 'Unknown',
             $route['method'] ?? 'Unknown',
             $route['http_methods'],
@@ -260,7 +265,7 @@ class AdvancedAiGenerator
             "Method: %s\n" .
             "HTTP Methods: %s\n" .
             "URI: %s\n\n" .
-            "Provide a JSON object showing what this endpoint would return on success.",
+            'Provide a JSON object showing what this endpoint would return on success.',
             $route['controller'] ?? 'Unknown',
             $route['method'] ?? 'Unknown',
             $route['http_methods'],
@@ -283,7 +288,7 @@ class AdvancedAiGenerator
             "- status_code: HTTP status\n" .
             "- message: error message\n" .
             "- description: when this error occurs\n\n" .
-            "Include common errors like 400, 401, 403, 404, 422, 500.",
+            'Include common errors like 400, 401, 403, 404, 422, 500.',
             $route['controller'] ?? 'Unknown',
             $route['method'] ?? 'Unknown',
             $route['http_methods'],
@@ -297,7 +302,7 @@ class AdvancedAiGenerator
     private function parseParametersResponse(string $response, array $route): array
     {
         $parameters = [];
-        
+
         // Extract path parameters from URI
         preg_match_all('/\{([^}]+)\}/', $route['uri'], $matches);
         foreach ($matches[1] as $param) {
@@ -317,7 +322,7 @@ class AdvancedAiGenerator
             if (is_array($aiParams)) {
                 $parameters = array_merge($parameters, $aiParams);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Fallback to basic parameters
         }
 
@@ -331,8 +336,9 @@ class AdvancedAiGenerator
     {
         try {
             $decoded = json_decode($response, true);
+
             return is_array($decoded) ? $decoded : [];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return [];
         }
     }
@@ -347,7 +353,7 @@ class AdvancedAiGenerator
             if (is_array($decoded)) {
                 return $decoded;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Fallback to common errors
         }
 

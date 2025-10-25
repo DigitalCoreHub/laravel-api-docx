@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DigitalCoreHub\LaravelApiDocx\Services;
 
 /**
@@ -9,9 +11,6 @@ class ReDocGenerator
 {
     /**
      * Generate a complete HTML page with ReDoc integration.
-     *
-     * @param string $openApiJson
-     * @return string
      */
     public function generate(string $openApiJson): string
     {
@@ -23,8 +22,6 @@ class ReDocGenerator
 
     /**
      * Get the HTML template with modern styling.
-     *
-     * @return string
      */
     private function getHtmlTemplate(): string
     {

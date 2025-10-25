@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DigitalCoreHub\LaravelApiDocx\Commands;
 
 use DigitalCoreHub\LaravelApiDocx\Services\AdvancedAiGenerator;
@@ -12,6 +14,8 @@ use DigitalCoreHub\LaravelApiDocx\Services\ReDocGenerator;
 use DigitalCoreHub\LaravelApiDocx\Services\RouteCollector;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 
 /**
  * Artisan command that generates the API documentation markdown file.
@@ -32,17 +36,6 @@ class GenerateDocsCommand extends Command
      */
     protected $description = 'Generate API documentation for all API routes.';
 
-    /**
-     * @param RouteCollector $collector
-     * @param DocBlockParser $docBlockParser
-     * @param AiDocGenerator $aiDocGenerator
-     * @param AdvancedAiGenerator $advancedAiGenerator
-     * @param MarkdownFormatter $markdownFormatter
-     * @param OpenApiFormatter $openApiFormatter
-     * @param PostmanFormatter $postmanFormatter
-     * @param ReDocGenerator $reDocGenerator
-     * @param Filesystem $files
-     */
     public function __construct(
         private readonly RouteCollector $collector,
         private readonly DocBlockParser $docBlockParser,
@@ -104,12 +97,13 @@ class GenerateDocsCommand extends Command
         $customOutput = $this->option('output');
         $advanced = $this->option('advanced');
         $watch = $this->option('watch');
-        
+
         $this->info(sprintf('Found %d API routes. Generating documentation...', count($documentation)));
 
         if ($watch) {
             $this->info('Watch mode enabled. Press Ctrl+C to stop.');
             $this->watchForChanges($documentation, $format, $customOutput, $advanced);
+
             return 0;
         }
 
@@ -154,7 +148,7 @@ class GenerateDocsCommand extends Command
 
         foreach ($documentation as $route) {
             $enhancedRoute = $route;
-            
+
             if ($this->advancedAiGenerator->isEnabled()) {
                 $aiDocs = $this->advancedAiGenerator->generateComprehensiveDocs($route);
                 $enhancedRoute = array_merge($route, $aiDocs);
@@ -172,16 +166,16 @@ class GenerateDocsCommand extends Command
     private function watchForChanges(array $documentation, string $format, ?string $customOutput, bool $advanced): void
     {
         $lastModified = 0;
-        
+
         while (true) {
             $currentModified = $this->getLastModifiedTime();
-            
+
             if ($currentModified > $lastModified) {
                 $this->info('Changes detected. Regenerating documentation...');
                 $this->generateDocumentation($documentation, $format, $customOutput, $advanced);
                 $lastModified = $currentModified;
             }
-            
+
             sleep(2);
         }
     }
@@ -201,7 +195,7 @@ class GenerateDocsCommand extends Command
             if (is_file($file)) {
                 $maxTime = max($maxTime, filemtime($file));
             } elseif (is_dir($file)) {
-                $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($file));
+                $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($file));
                 foreach ($iterator as $file) {
                     if ($file->isFile()) {
                         $maxTime = max($maxTime, $file->getMTime());

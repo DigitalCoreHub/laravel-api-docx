@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DigitalCoreHub\LaravelApiDocx\Support;
 
 /**
@@ -10,10 +12,7 @@ interface AiClientInterface
     /**
      * Generate a description for the given endpoint context.
      *
-     * @param string $controller
-     * @param string $method
      * @param array<string, mixed> $context
-     * @return string
      */
     public function describeEndpoint(string $controller, string $method, array $context): string;
 }

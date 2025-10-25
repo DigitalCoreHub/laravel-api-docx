@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DigitalCoreHub\LaravelApiDocx;
 
 use DigitalCoreHub\LaravelApiDocx\Commands\GenerateDocsCommand;

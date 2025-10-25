@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DigitalCoreHub\LaravelApiDocx\Support\Providers;
 
 use DigitalCoreHub\LaravelApiDocx\Support\AiClientInterface;
@@ -13,16 +15,13 @@ use Psr\Log\LoggerInterface;
 class OpenAiClient implements AiClientInterface
 {
     /**
-     * @param GuzzleClient $httpClient
      * @param array<string, mixed> $config
-     * @param LoggerInterface|null $logger
      */
     public function __construct(
         private readonly GuzzleClient $httpClient,
         private readonly array $config,
         private readonly ?LoggerInterface $logger = null
-    ) {
-    }
+    ) {}
 
     /**
      * {@inheritDoc}
@@ -71,7 +70,7 @@ class OpenAiClient implements AiClientInterface
 
         $payload = json_decode((string) $response->getBody(), true);
 
-        if (!is_array($payload)) {
+        if (! is_array($payload)) {
             return '';
         }
 
@@ -83,10 +82,7 @@ class OpenAiClient implements AiClientInterface
     /**
      * Construct the prompt describing the route context.
      *
-     * @param string $controller
-     * @param string $method
      * @param array<string, mixed> $context
-     * @return string
      */
     private function buildPrompt(string $controller, string $method, array $context): string
     {

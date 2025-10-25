@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DigitalCoreHub\LaravelApiDocx\Services;
 
 use DigitalCoreHub\LaravelApiDocx\Support\AiClientInterface;
@@ -10,17 +12,11 @@ use DigitalCoreHub\LaravelApiDocx\Support\CacheManager;
  */
 class AiDocGenerator
 {
-    /**
-     * @param AiClientInterface $client
-     * @param CacheManager $cacheManager
-     * @param bool $enabled
-     */
     public function __construct(
         private readonly AiClientInterface $client,
         private readonly CacheManager $cacheManager,
         private readonly bool $enabled
-    ) {
-    }
+    ) {}
 
     /**
      * Determine if AI generation is enabled.
@@ -34,7 +30,6 @@ class AiDocGenerator
      * Generate a description for the provided route metadata.
      *
      * @param array<string, mixed> $route
-     * @return string
      */
     public function generate(array $route): string
     {

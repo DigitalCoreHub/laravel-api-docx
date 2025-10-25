@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'output' => function_exists('base_path')
         ? base_path('docs/api.md')

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DigitalCoreHub\LaravelApiDocx\Services;
 
 use ReflectionClass;
@@ -13,10 +15,6 @@ class DocBlockParser
 {
     /**
      * Extract the first meaningful summary line from a docblock.
-     *
-     * @param string $controller
-     * @param string $method
-     * @return string|null
      */
     public function extractSummary(string $controller, string $method): ?string
     {
@@ -50,16 +48,13 @@ class DocBlockParser
     /**
      * Resolve the reflection method handling invokable controllers.
      *
-     * @param string $controller
-     * @param string $method
-     * @return ReflectionMethod
      * @throws ReflectionException
      */
     private function resolveMethod(string $controller, string $method): ReflectionMethod
     {
         $reflectionClass = new ReflectionClass($controller);
 
-        if ($method === '' || !$reflectionClass->hasMethod($method)) {
+        if ($method === '' || ! $reflectionClass->hasMethod($method)) {
             if ($reflectionClass->hasMethod('__invoke')) {
                 return $reflectionClass->getMethod('__invoke');
             }

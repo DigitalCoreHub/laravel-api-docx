@@ -65,14 +65,13 @@
         "pint": "pint",
         "pint-test": "pint --test",
         "analyse": "phpstan analyse",
-        "audit": "composer audit",
+        "security-audit": "composer audit",
         "format": [
             "@pint",
             "@fix-style"
         ],
         "quality": [
             "@pint-test",
-            "@check-style",
             "@analyse",
             "@test"
         ]

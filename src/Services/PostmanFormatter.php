@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DigitalCoreHub\LaravelApiDocx\Services;
 
 use Illuminate\Support\Str;
@@ -13,7 +15,6 @@ class PostmanFormatter
      * Build the Postman collection for the provided documentation entries.
      *
      * @param array<int, array<string, string>> $documentation
-     * @return string
      */
     public function format(array $documentation): string
     {
@@ -41,6 +42,7 @@ class PostmanFormatter
      * Build the items array for the Postman collection.
      *
      * @param array<int, array<string, string>> $documentation
+     *
      * @return array<int, array<string, mixed>>
      */
     private function buildItems(array $documentation): array
@@ -69,6 +71,7 @@ class PostmanFormatter
      * Group routes by controller.
      *
      * @param array<int, array<string, string>> $documentation
+     *
      * @return array<string, array<int, array<string, string>>>
      */
     private function groupByController(array $documentation): array
@@ -87,6 +90,7 @@ class PostmanFormatter
      * Build a Postman request item.
      *
      * @param array<string, string> $route
+     *
      * @return array<string, mixed>
      */
     private function buildRequest(array $route): array
@@ -137,7 +141,7 @@ class PostmanFormatter
 
         // Add path variables
         $pathVariables = $this->extractPathVariables($route['uri']);
-        if (!empty($pathVariables)) {
+        if (! empty($pathVariables)) {
             $request['request']['url']['variable'] = array_map(function ($var) {
                 return [
                     'key' => $var,
@@ -152,16 +156,13 @@ class PostmanFormatter
 
     /**
      * Convert Laravel route pattern to Postman URL format.
-     *
-     * @param string $uri
-     * @return string
      */
     private function convertLaravelRouteToPostmanUrl(string $uri): string
     {
         // Remove api prefix if present
         if (Str::startsWith($uri, 'api/')) {
             $uri = '/' . substr($uri, 4);
-        } elseif (!Str::startsWith($uri, '/')) {
+        } elseif (! Str::startsWith($uri, '/')) {
             $uri = '/' . $uri;
         }
 
@@ -172,18 +173,17 @@ class PostmanFormatter
      * Generate a meaningful request name.
      *
      * @param array<string, string> $route
-     * @return string
      */
     private function generateRequestName(array $route): string
     {
         $methods = explode('|', $route['http_methods']);
         $method = strtoupper($methods[0]);
         $uri = $route['uri'];
-        
+
         // Extract the main resource from URI
         $segments = explode('/', trim($uri, '/'));
         $resource = $segments[1] ?? 'resource';
-        
+
         $action = match ($method) {
             'GET' => 'List',
             'POST' => 'Create',
@@ -197,25 +197,23 @@ class PostmanFormatter
 
     /**
      * Format controller name for folder display.
-     *
-     * @param string $controller
-     * @return string
      */
     private function formatControllerName(string $controller): string
     {
         $name = class_basename($controller);
+
         return Str::of($name)->replace('Controller', '')->snake()->title()->toString();
     }
 
     /**
      * Extract path variables from the URI.
      *
-     * @param string $uri
      * @return array<int, string>
      */
     private function extractPathVariables(string $uri): array
     {
         preg_match_all('/\{([^}]+)\}/', $uri, $matches);
+
         return $matches[1];
     }
 }
