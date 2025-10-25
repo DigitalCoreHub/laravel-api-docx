@@ -30,7 +30,10 @@
     "require-dev": {
         "phpunit/phpunit": "^11.0",
         "orchestra/testbench": "^9.0",
-        "mockery/mockery": "^1.6"
+        "mockery/mockery": "^1.6",
+        "laravel/pint": "^1.0",
+        "php-cs-fixer/shim": "^3.0",
+        "phpstan/phpstan": "^1.0"
     },
     "autoload": {
         "psr-4": {
@@ -56,6 +59,22 @@
     "prefer-stable": true,
     "scripts": {
         "test": "phpunit",
-        "test-coverage": "phpunit --coverage-html coverage"
+        "test-coverage": "phpunit --coverage-html coverage",
+        "check-style": "php-cs-fixer fix --dry-run --diff",
+        "fix-style": "php-cs-fixer fix",
+        "pint": "pint",
+        "pint-test": "pint --test",
+        "analyse": "phpstan analyse",
+        "audit": "composer audit",
+        "format": [
+            "@pint",
+            "@fix-style"
+        ],
+        "quality": [
+            "@pint-test",
+            "@check-style",
+            "@analyse",
+            "@test"
+        ]
     }
 }

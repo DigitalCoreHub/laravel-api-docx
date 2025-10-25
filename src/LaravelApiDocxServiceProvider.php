@@ -3,10 +3,13 @@
 namespace DigitalCoreHub\LaravelApiDocx;
 
 use DigitalCoreHub\LaravelApiDocx\Commands\GenerateDocsCommand;
+use DigitalCoreHub\LaravelApiDocx\Services\AdvancedAiGenerator;
 use DigitalCoreHub\LaravelApiDocx\Services\AiDocGenerator;
 use DigitalCoreHub\LaravelApiDocx\Services\DocBlockParser;
 use DigitalCoreHub\LaravelApiDocx\Services\MarkdownFormatter;
 use DigitalCoreHub\LaravelApiDocx\Services\OpenApiFormatter;
+use DigitalCoreHub\LaravelApiDocx\Services\PostmanFormatter;
+use DigitalCoreHub\LaravelApiDocx\Services\ReDocGenerator;
 use DigitalCoreHub\LaravelApiDocx\Services\RouteCollector;
 use DigitalCoreHub\LaravelApiDocx\Support\AiClientInterface;
 use DigitalCoreHub\LaravelApiDocx\Support\CacheManager;
@@ -31,6 +34,8 @@ class LaravelApiDocxServiceProvider extends ServiceProvider
         $this->app->singleton(DocBlockParser::class);
         $this->app->singleton(MarkdownFormatter::class);
         $this->app->singleton(OpenApiFormatter::class);
+        $this->app->singleton(PostmanFormatter::class);
+        $this->app->singleton(ReDocGenerator::class);
         $this->app->singleton(CacheManager::class, function ($app): CacheManager {
             return new CacheManager(
                 $app['files'],
@@ -54,6 +59,14 @@ class LaravelApiDocxServiceProvider extends ServiceProvider
 
         $this->app->singleton(AiDocGenerator::class, function ($app): AiDocGenerator {
             return new AiDocGenerator(
+                $app->make(AiClientInterface::class),
+                $app->make(CacheManager::class),
+                (bool) digitalcorehub_config('api-docs.enable_ai', true)
+            );
+        });
+
+        $this->app->singleton(AdvancedAiGenerator::class, function ($app): AdvancedAiGenerator {
+            return new AdvancedAiGenerator(
                 $app->make(AiClientInterface::class),
                 $app->make(CacheManager::class),
                 (bool) digitalcorehub_config('api-docs.enable_ai', true)

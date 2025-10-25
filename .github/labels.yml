@@ -1,0 +1,130 @@
+# GitHub Labels Configuration
+# This file can be used with github-label-sync to sync labels
+
+- name: "bug"
+  color: "d73a4a"
+  description: "Something isn't working"
+
+- name: "documentation"
+  color: "0075ca"
+  description: "Improvements or additions to documentation"
+
+- name: "duplicate"
+  color: "cfd3d7"
+  description: "This issue or pull request already exists"
+
+- name: "enhancement"
+  color: "a2eeef"
+  description: "New feature or request"
+
+- name: "good first issue"
+  color: "7057ff"
+  description: "Good for newcomers"
+
+- name: "help wanted"
+  color: "008672"
+  description: "Extra attention is needed"
+
+- name: "invalid"
+  color: "e4e669"
+  description: "This doesn't seem right"
+
+- name: "question"
+  color: "d876e3"
+  description: "Further information is requested"
+
+- name: "wontfix"
+  color: "ffffff"
+  description: "This will not be worked on"
+
+- name: "priority: high"
+  color: "ff0000"
+  description: "High priority issue"
+
+- name: "priority: medium"
+  color: "ffa500"
+  description: "Medium priority issue"
+
+- name: "priority: low"
+  color: "ffff00"
+  description: "Low priority issue"
+
+- name: "priority: critical"
+  color: "8b0000"
+  description: "Critical issue requiring immediate attention"
+
+- name: "status: needs-triage"
+  color: "fbca04"
+  description: "Needs to be triaged"
+
+- name: "status: in-progress"
+  color: "0e8a16"
+  description: "Work in progress"
+
+- name: "status: blocked"
+  color: "d93f0b"
+  description: "Blocked by another issue"
+
+- name: "status: ready-for-review"
+  color: "0e8a16"
+  description: "Ready for review"
+
+- name: "type: feature"
+  color: "a2eeef"
+  description: "New feature"
+
+- name: "type: bug"
+  color: "d73a4a"
+  description: "Bug fix"
+
+- name: "type: refactor"
+  color: "7057ff"
+  description: "Code refactoring"
+
+- name: "type: performance"
+  color: "ff6b6b"
+  description: "Performance improvement"
+
+- name: "type: security"
+  color: "8b0000"
+  description: "Security related"
+
+- name: "area: ai"
+  color: "00d4aa"
+  description: "AI/OpenAI related"
+
+- name: "area: documentation"
+  color: "0075ca"
+  description: "Documentation generation"
+
+- name: "area: cli"
+  color: "ff6b6b"
+  description: "Command line interface"
+
+- name: "area: config"
+  color: "7057ff"
+  description: "Configuration"
+
+- name: "area: testing"
+  color: "00d4aa"
+  description: "Tests and testing"
+
+- name: "breaking-change"
+  color: "8b0000"
+  description: "Breaking change"
+
+- name: "dependencies"
+  color: "0366d6"
+  description: "Dependency updates"
+
+- name: "composer"
+  color: "0366d6"
+  description: "Composer related"
+
+- name: "github-actions"
+  color: "2088ff"
+  description: "GitHub Actions related"
+
+- name: "stale"
+  color: "cfd3d7"
+  description: "Stale issue or PR"

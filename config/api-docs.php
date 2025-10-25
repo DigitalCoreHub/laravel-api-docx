@@ -9,6 +9,14 @@ return [
         ? base_path('docs/api.json')
         : __DIR__ . '/../docs/api.json',
 
+    'postman_output' => function_exists('base_path')
+        ? base_path('docs/api.postman.json')
+        : __DIR__ . '/../docs/api.postman.json',
+
+    'redoc_output' => function_exists('base_path')
+        ? base_path('docs/api.html')
+        : __DIR__ . '/../docs/api.html',
+
     'enable_ai' => true,
     'ai' => [
         'provider' => 'openai',
